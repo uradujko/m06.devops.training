@@ -61,5 +61,9 @@ blocks:
       - 'Block #3'
     task:
       jobs:
-        - name: 'Job #1'
-          commands: []
+        - name: Destroy
+          commands:
+            - artifact pull
+            - terraform destroy -auto-approve
+      secrets:
+        - name: localstack
