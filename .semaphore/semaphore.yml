@@ -118,6 +118,7 @@ blocks:
             - artifact pull workflow .terraform
             - artifact pull workflow .terraform.lock.hcl
             - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
+            - terraform destroy -auto-approve
             - terraform validate
             - terraform apply -auto-approve
             - cp terraform.tfstate terraform.tfstate__
@@ -142,3 +143,17 @@ blocks:
             - '            "email": {"S": "alice@example.com"}'
             - '          }'''
             - aws dynamodb scan --table-name table-uros
+  - name: 'Block #9'
+    dependencies:
+      - 'Block #8'
+    task:
+      jobs:
+        - name: Destroy
+          commands:
+            - cd 3-terraform-dynamodb
+            - artifact pull workflow terraform.tfstate__
+            - artifact pull workflow .terraform
+            - artifact pull workflow .terraform.lock.hcl
+            - cp terraform.tfstate_ terraform.tfstate
+            - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
+            - terraform destroy -auto-approve
