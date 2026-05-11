@@ -24,25 +24,16 @@ auto_cancel:
 # Pipeline blocks represent groups of jobs that can run in parallel
 blocks:
   # Block for testing
-  - name: "🧪 Test"
+  - name: "Run terraform"
     dependencies: []
     task:
       jobs:
         - name: "🟢 Run Tests"
           commands:
-            - echo "Checking out code..."
-            - echo "Installing dependencies..."
-            - echo "Running test suite..."
-            - echo "Tests completed successfully!"
-
-  # Block for deployment
-  - name: "🚀 Deploy"
-    dependencies: ["🧪 Test"]  # Only deploy if tests pass
-    task:
-      jobs:
-        - name: "📦 Deploy to Production"
-          commands:
-            - echo "Building application..."
-            - echo "Running security checks..."
-            - echo "Deploying to production..."
-            - echo "Deployment completed successfully!"
+            - checkout
+            - aws s3 ls
+            - terraform init .terraform
+#            - artifact push workflow .terraform
+            - terraform plan
+            - terraform apply -auto-approve
+            - terraform destroy -auto-approve
