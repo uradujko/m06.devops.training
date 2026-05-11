@@ -115,6 +115,9 @@ blocks:
         - name: Deploy
           commands:
             - cd 3-terraform-dynamodb
+            - artifact pull workflow .terraform
+            - artifact pull workflow .terraform.lock.hcl
+            - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
             - terraform validate
             - terraform apply -auto-approve
             - cp terraform.tfstate terraform.tfstate__
