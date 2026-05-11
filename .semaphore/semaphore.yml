@@ -12,21 +12,46 @@ auto_cancel:
     when: branch != 'main'
   queued:
     when: branch = 'main'
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - cd 1-terraform-apply
 blocks:
   - name: Run terraform
     dependencies: []
     task:
       jobs:
-        - name: "\U0001F7E2 Run Tests"
+        - name: Initialize
           commands:
-            - checkout
-            - cd 1-terraform-apply
-            - aws s3 ls
             - terraform init
             - artifact push workflow .terraform
             - artifact push workflow .terraform.lock.hcl
-            - terraform plan
-            - terraform apply -auto-approve
-            - terraform destroy -auto-approve
       secrets:
         - name: localstack
+  - name: 'Block #2'
+    dependencies:
+      - Run terraform
+    task:
+      jobs:
+        - name: Deploy
+          commands:
+            - artifact pull workflow .terraform
+            - artifact pull workflow .terraform.lock.hcl
+            - terraform validate
+            - terraform apply -auto-approve
+            - artifact push workflow terraform.tfstate
+  - name: 'Block #3'
+    dependencies:
+      - 'Block #2'
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands: []
+  - name: 'Block #4'
+    dependencies:
+      - 'Block #3'
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands: []
