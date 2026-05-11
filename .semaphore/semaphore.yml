@@ -21,7 +21,7 @@ blocks:
           commands:
             - checkout
             - aws s3 ls
-            - terraform init
+            - erraform init      .terraform         artifact push workflow .terraform
             - terraform plan
             - terraform apply -auto-approve
             - terraform destroy -auto-approve
