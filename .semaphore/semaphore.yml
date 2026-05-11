@@ -21,7 +21,7 @@ blocks:
           commands:
             - checkout
             - aws s3 ls
-            - terraform init .terraform
+            - terraform init
             - terraform plan
             - terraform apply -auto-approve
             - terraform destroy -auto-approve
