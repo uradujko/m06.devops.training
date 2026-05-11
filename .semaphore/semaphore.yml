@@ -87,6 +87,8 @@ blocks:
             - terraform apply -auto-approve
             - cp terraform.tfstate terraform.tfstate_
             - artifact push workflow terraform.tfstate_
+      secrets:
+        - name: localstack
   - name: 'Block #6'
     dependencies:
       - 'Block #5'
@@ -101,3 +103,5 @@ blocks:
             - cp terraform.tfstate_ terraform.tfstate
             - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
             - terraform destroy -auto-approve
+      secrets:
+        - name: localstack
