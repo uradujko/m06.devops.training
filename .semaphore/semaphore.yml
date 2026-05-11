@@ -122,3 +122,23 @@ blocks:
             - terraform apply -auto-approve
             - cp terraform.tfstate terraform.tfstate__
             - artifact push workflow terraform.tfstate__
+  - name: 'Block #8'
+    dependencies:
+      - 'Block #7'
+    task:
+      secrets:
+        - name: localstack
+      jobs:
+        - name: Interact with the table
+          commands:
+            - cd 3-terraform-dynamodb
+            - aws dynamodb list-tables
+            - aws dynamodb describe-table --table-name table-uros
+            - aws dynamodb put-item \
+            - '        --table-name table-uros \'
+            - '        --item ''{'
+            - '            "user_id": {"S": "u1"},'
+            - '            "name": {"S": "Alice"},'
+            - '            "email": {"S": "alice@example.com"}'
+            - '          }'''
+            - aws dynamodb scan --table-name table-uros
