@@ -135,10 +135,10 @@ blocks:
             - aws dynamodb list-tables
             - aws dynamodb describe-table --table-name table-uros
             - aws dynamodb put-item \
-            - '        --table-name table-uros \'
+            - '        --table-name devops-training-table \'
             - '        --item ''{'
             - '            "user_id": {"S": "u1"},'
             - '            "name": {"S": "Alice"},'
             - '            "email": {"S": "alice@example.com"}'
             - '          }'''
-            - aws dynamodb scan --table-name table-uros
+            - aws dynamodb scan --table-name devops-training-table
