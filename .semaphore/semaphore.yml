@@ -16,7 +16,6 @@ global_job_config:
   prologue:
     commands:
       - checkout
-      - cd 1-terraform-apply
 blocks:
   - name: Run terraform
     dependencies: []
@@ -24,6 +23,7 @@ blocks:
       jobs:
         - name: Initialize
           commands:
+            - cd 1-terraform-apply
             - terraform init
             - artifact push workflow .terraform
             - artifact push workflow .terraform.lock.hcl
@@ -36,6 +36,7 @@ blocks:
       jobs:
         - name: Deploy
           commands:
+            - cd 1-terraform-apply
             - artifact pull workflow .terraform
             - artifact pull workflow .terraform.lock.hcl
             - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
@@ -51,6 +52,7 @@ blocks:
       jobs:
         - name: Use
           commands:
+            - cd 1-terraform-apply
             - 'aws s3 cp README.md s3://group1-uros/'
             - 'aws s3 ls s3://group1-uros'
             - 'aws s3 rm s3://group1-uros/README.md'
@@ -63,9 +65,37 @@ blocks:
       jobs:
         - name: Destroy
           commands:
+            - cd 1-terraform-apply
             - artifact pull workflow .terraform
             - artifact pull workflow .terraform.lock.hcl
             - chmod +x .terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
             - terraform destroy -auto-approve
       secrets:
         - name: localstack
+  - name: 'Block #5'
+    dependencies:
+      - Run terraform
+    task:
+      jobs:
+        - name: Deploy
+          commands:
+            - cd 2-terraform-ec2
+            - artifact pull workflow .terraform
+            - artifact pull workflow .terraform.lock.hcl
+            - terraform validate
+            - terraform apply -auto-approve
+            - cp terraform.tfstate terraform.tfstate_
+            - artifact push workflow terraform.tfstate_
+  - name: 'Block #6'
+    dependencies:
+      - 'Block #5'
+    task:
+      jobs:
+        - name: Destroy
+          commands:
+            - cd 2-terraform-ec2
+            - artifact pull workflow terraform.tfstate_
+            - artifact pull workflow .terraform
+            - artifact pull workflow .terraform.lock.hcl
+            - cp terraform.tfstate_ terraform.tfstate
+            - terraform destroy -auto-approve
