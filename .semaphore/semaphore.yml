@@ -65,7 +65,6 @@ blocks:
           commands:
             - artifact pull workflow .terraform
             - artifact pull workflow .terraform.lock.hcl
-            - artifact pull workflow terraform.tfstate
             - terraform destroy -auto-approve
       secrets:
         - name: localstack
