@@ -20,9 +20,11 @@ blocks:
         - name: "\U0001F7E2 Run Tests"
           commands:
             - checkout
+            - cd 1-terraform-apply
             - aws s3 ls
             - terraform init
             - artifact push workflow .terraform
+            - artifact push workflow .terraform.lock.hcl
             - terraform plan
             - terraform apply -auto-approve
             - terraform destroy -auto-approve
