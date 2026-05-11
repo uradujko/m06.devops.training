@@ -36,12 +36,13 @@ blocks:
       jobs:
         - name: Deploy
           commands:
-            - aws s3 ls
             - artifact pull workflow .terraform
             - artifact pull workflow .terraform.lock.hcl
             - terraform validate
             - terraform apply -auto-approve
             - artifact push workflow terraform.tfstate
+      secrets:
+        - name: localstack
   - name: 'Block #3'
     dependencies:
       - 'Block #2'
