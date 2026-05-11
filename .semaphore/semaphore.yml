@@ -49,8 +49,13 @@ blocks:
       - 'Block #2'
     task:
       jobs:
-        - name: 'Job #1'
-          commands: []
+        - name: Use
+          commands:
+            - 'aws s3 cp README.md s3://group1-uros/'
+            - 'aws s3 ls s3://group1-uros'
+            - 'aws s3 rm s3://group1-uros/README.md'
+      secrets:
+        - name: localstack
   - name: 'Block #4'
     dependencies:
       - 'Block #3'
